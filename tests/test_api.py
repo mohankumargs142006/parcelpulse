@@ -38,3 +38,30 @@ def test_bad_signature_is_rejected(monkeypatch):
         })
     assert response.status_code == 401
     assert published == []
+def test_missing_signature_is_rejected(monkeypatch):
+    monkeypatch.setattr(api, "init_db", lambda: None)
+    monkeypatch.setattr(api, "WEBHOOK_SECRET", "test-secret")
+
+    published = []
+    monkeypatch.setattr(
+        api,
+        "publish_event",
+        lambda event: published.append(event),
+    )
+
+    raw = (
+        b'{"event_id":"evt-missing-signature",'
+        b'"shipment_id":"SHIP-SEC-002",'
+        b'"status":"CREATED",'
+        b'"occurred_at":"2026-10-12T10:00:00Z"}'
+    )
+
+    with TestClient(api.app) as client:
+        response = client.post(
+            "/v1/shipments/events",
+            content=raw,
+            headers={"content-type": "application/json"},
+        )
+
+    assert response.status_code == 401
+    assert published == []
