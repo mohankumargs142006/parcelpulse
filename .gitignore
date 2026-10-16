@@ -1,0 +1,11 @@
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+data/
+
+# Local patch backups
+*.bak-*
+/fix_parcelpulse_rabbitmq.ps1

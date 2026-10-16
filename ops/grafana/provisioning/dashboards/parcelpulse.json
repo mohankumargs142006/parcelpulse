@@ -1,0 +1,25 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":0,"y":0},"id":1,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single","sort":"none"}},"targets":[{"expr":"sum(rate(parcelpulse_webhook_requests_total{result=\"accepted\"}[5m]))","legendFormat":"Accepted / sec","refId":"A"}],"title":"Accepted webhook rate","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":12,"y":0},"id":2,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single","sort":"none"}},"targets":[{"expr":"increase(parcelpulse_worker_processed_total[5m])","legendFormat":"Processed (5m)","refId":"A"}],"title":"Unique events processed","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":0,"y":7},"id":3,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single","sort":"none"}},"targets":[{"expr":"increase(parcelpulse_worker_failures_total[5m])","legendFormat":"Failures (5m)","refId":"A"}],"title":"Worker failures","type":"timeseries"},
+    {"datasource":{"type":"prometheus","uid":"prometheus"},"fieldConfig":{"defaults":{"color":{"mode":"palette-classic"},"unit":"short"},"overrides":[]},"gridPos":{"h":7,"w":12,"x":12,"y":7},"id":4,"options":{"legend":{"displayMode":"list","placement":"bottom"},"tooltip":{"mode":"single","sort":"none"}},"targets":[{"expr":"increase(parcelpulse_worker_dlq_total[5m])","legendFormat":"DLQ events (5m)","refId":"A"},{"expr":"increase(parcelpulse_worker_duplicates_total[5m])","legendFormat":"Duplicates (5m)","refId":"B"}],"title":"DLQ and duplicate events","type":"timeseries"}
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["parcelpulse", "local-demo"],
+  "templating": {"list": []},
+  "time": {"from": "now-15m", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "ParcelPulse - Reliability",
+  "uid": "parcelpulse-main",
+  "version": 1
+}
