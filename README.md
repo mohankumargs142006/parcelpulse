@@ -1,5 +1,9 @@
 # ParcelPulse Zero-Cost Edition
 
+[![ParcelPulse CI](https://github.com/mohankumargs142006/parcelpulse/actions/workflows/ci.yml/badge.svg)](https://github.com/mohankumargs142006/parcelpulse/actions/workflows/ci.yml)
+
+A local-first, event-driven shipment webhook platform for a cloud engineering portfolio.
+
 A local-first, event-driven shipment webhook platform for a cloud engineering portfolio. It is designed to run on your own Windows 11 laptop using free developer tools. **No AWS/GCP/Azure account, paid API, hosted database, or cloud bill is required to build and demonstrate this edition.**
 
 > Scope honesty: this edition demonstrates cloud-native architecture patterns locally. It is not deployed to a public cloud. Use `docs/AWS_MAPPING.md` to explain how the local components map to an AWS deployment. A real cloud deployment is optional and may incur charges.
