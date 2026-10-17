@@ -89,7 +89,7 @@ Confirm that the final command prints `SIMULATE_WORKER_FAILURE=true`.
 Run the reusable test sender:
 
 ```powershell
-py .\scripts_send_failure_test.py
+py .\scripts_send_failure_demo.py
 ```
 
 Record the returned event ID and shipment ID. An HTTP 202 response means the API accepted the event for asynchronous processing; it does not mean that processing succeeded.
@@ -110,6 +110,25 @@ Expected outcome for an isolated test with an initially empty queue:
 - Worker logs show the deliberately injected processing failures.
 
 Message counts may differ if other events are being processed concurrently. Confirm the test message's identity before drawing conclusions.
+Before restoring the worker, wait until Prometheus has scraped the final dead-letter queue (DLQ) counter for this run. Worker counters are held in process memory and reset when the worker is recreated.
+
+After the final failure/DLQ log appears, allow at least 20 seconds for the configured 15-second scrape interval. Then query the current counter and inspect its sample timestamp:
+
+```powershell
+$q = [uri]::EscapeDataString("parcelpulse_worker_dlq_total")
+$r = Invoke-RestMethod "http://localhost:9090/api/v1/query?query=$q"
+
+$r.data.result | ForEach-Object {
+    [pscustomobject]@{
+        Value = $_.value[1]
+        SampleTimeUtc = [DateTimeOffset]::FromUnixTimeMilliseconds(
+            [long]([double]$_.value[0] * 1000)
+        ).UtcDateTime
+    }
+}
+```
+
+Confirm that the sample was recorded after the final DLQ transition and reflects the counter increment for this test run. If the sample has not updated, wait another five seconds and query again. Do not recreate the worker until the scrape is confirmed.
 
 ### D. Restore normal worker operation
 
