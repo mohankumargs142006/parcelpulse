@@ -1,28 +1,53 @@
 name: ParcelPulse CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
 permissions:
   contents: read
+
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: parcelpulse
+          POSTGRES_PASSWORD: test-password
+          POSTGRES_DB: parcelpulse_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U parcelpulse -d parcelpulse_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: "3.12"
           cache: pip
           cache-dependency-path: app/requirements-dev.txt
+
       - name: Install dependencies
         run: python -m pip install -r app/requirements-dev.txt
+
       - name: Lint
         run: ruff check app/parcelpulse tests scripts_send_event.py
+
       - name: Test
         env:
           PYTHONPATH: app
           WEBHOOK_SECRET: test-secret
+          TEST_DATABASE_URL: postgresql://parcelpulse:test-password@localhost:5432/parcelpulse_test
         run: pytest -q
+
       - name: Build container image
         run: docker build -t parcelpulse:ci ./app
