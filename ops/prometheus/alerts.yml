@@ -1,0 +1,38 @@
+groups:
+  - name: parcelpulse-reliability
+    rules:
+      - alert: ParcelPulseTargetDown
+        expr: up{job=~"parcelpulse-api|parcelpulse-worker|rabbitmq"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "A ParcelPulse monitoring target is down"
+          description: "Prometheus cannot scrape {{ $labels.job }} at {{ $labels.instance }}."
+
+      - alert: ParcelPulseMainQueueBacklog
+        expr: rabbitmq_detailed_queue_messages_ready{queue="shipment.events", vhost="/"} > 100
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "ParcelPulse main queue backlog is high"
+          description: "The main shipment queue has more than 100 ready messages for 5 minutes."
+
+      - alert: ParcelPulseWorkerFailures
+        expr: increase(parcelpulse_worker_failures_total[5m]) > 3
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "ParcelPulse worker failures are elevated"
+          description: "Worker failures increased by more than 3 over the last 5 minutes."
+
+      - alert: ParcelPulseDeadLetterQueueNotEmpty
+        expr: rabbitmq_detailed_queue_messages_ready{queue="shipment.events.dlq", vhost="/"} > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "ParcelPulse dead-letter queue contains messages"
+          description: "Inspect the shipment.events.dlq queue and review the affected worker events."
