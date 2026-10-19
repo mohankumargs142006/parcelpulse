@@ -107,4 +107,3 @@ volumes:
   grafana-data:
   rabbitmq-data:
     name: parcelpulse_rabbitmq-data
-    external: true
