@@ -19,6 +19,7 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.13-management-alpine
+    hostname: 562df61d9f9d
     restart: unless-stopped
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-parcelpulse}
@@ -26,6 +27,9 @@ services:
     ports:
       - "127.0.0.1:5672:5672"
       - "127.0.0.1:15672:15672"
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - ./ops/rabbitmq/enabled_plugins:/etc/rabbitmq/enabled_plugins:ro
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 5s
@@ -101,3 +105,5 @@ volumes:
   event-archive:
   prometheus-data:
   grafana-data:
+  rabbitmq-data:
+    name: parcelpulse_rabbitmq-data

@@ -9,3 +9,6 @@ data/
 # Local patch backups
 *.bak-*
 /fix_parcelpulse_rabbitmq.ps1
+
+# Local recovery backups
+backups/
